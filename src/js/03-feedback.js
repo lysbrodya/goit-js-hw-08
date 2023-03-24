@@ -1,46 +1,37 @@
 import throttle from 'lodash.throttle';
-const feedbackForm = document.querySelector('form');
-let email = '';
-let message = '';
-const form = {};
-// const emailLocal =
-if (localStorage.getItem('feedback-form-state')) {
-  feedbackForm.elements.email.value = JSON.parse(
-    localStorage.getItem('feedback-form-state')
+const form = document.querySelector('.feedback-form');
+const FEEDBACK_FORM = 'feedback-form-state';
+const feedbackForm = {
+  email: '',
+  message: '',
+};
+if (localStorage.getItem(FEEDBACK_FORM)) {
+  form.elements.email.value = JSON.parse(
+    localStorage.getItem(FEEDBACK_FORM)
   ).email;
   // const messageLocal =
-  feedbackForm.elements.message.value = JSON.parse(
-    localStorage.getItem('feedback-form-state')
+  form.elements.message.value = JSON.parse(
+    localStorage.getItem(FEEDBACK_FORM)
   ).message;
 }
 
-const emailLis = feedbackForm.addEventListener('input', el => {
-  //   el.preventDefault();
+form.addEventListener('input', throttle(emailLis, 500));
+
+function emailLis(el) {
+  const message = el.target.value;
   if (el.target.name === 'email') {
-    if (el.data === null) {
-      email = el.target.value;
-    } else {
-      email += el.data;
-    }
-  }
-  if (el.target.name === 'message') {
-    if (el.data === null) {
-      message = el.target.value;
-    } else {
-      message += el.data;
-    }
-  }
+    feedbackForm.email = message;
 
-  form.email = email;
-  form.message = message;
-  const formJs = JSON.stringify(form);
-  throttle(localStorage.setItem('feedback-form-state', formJs), 500);
-});
+    localStorage.setItem(FEEDBACK_FORM, JSON.stringify(feedbackForm));
+  } else {
+    feedbackForm.message = message;
+    localStorage.setItem(FEEDBACK_FORM, JSON.stringify(feedbackForm));
+  }
+}
 
-// localStorage.setItem('feedback-form-state', input.value);
-feedbackForm.addEventListener('submit', e => {
+form.addEventListener('submit', e => {
   e.preventDefault();
-  console.log(JSON.parse(localStorage.getItem('feedback-form-state')));
+  console.log(JSON.parse(localStorage.getItem(FEEDBACK_FORM)));
   localStorage.reset;
-  feedbackForm.reset();
+  form.reset();
 });
