@@ -21,10 +21,11 @@ function emailLis(el) {
   const message = el.target.value;
   if (el.target.name === 'email') {
     feedbackForm.email = message;
-
+    feedbackForm.message = form.elements.message.value;
     localStorage.setItem(FEEDBACK_FORM, JSON.stringify(feedbackForm));
   } else {
     feedbackForm.message = message;
+    feedbackForm.email = form.elements.email.value;
     localStorage.setItem(FEEDBACK_FORM, JSON.stringify(feedbackForm));
   }
 }
@@ -32,6 +33,6 @@ function emailLis(el) {
 form.addEventListener('submit', e => {
   e.preventDefault();
   console.log(JSON.parse(localStorage.getItem(FEEDBACK_FORM)));
-  localStorage.reset;
+  localStorage.clear();
   form.reset();
 });
